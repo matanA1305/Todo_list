@@ -3,7 +3,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: myapp
+    image: yp3yp3/to_do_list
     environment:
       DB_HOST: db
       DB_NAME: todo
@@ -17,7 +17,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: myapp
+    image: yp3yp3/to_do_list
     environment:
       DB_HOST: db
       DB_NAME: todo
