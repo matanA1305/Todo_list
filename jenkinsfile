@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('שלום') {
+            steps {
+                echo 'היי! זהו פייפליין בדיקה פשוט.'
+            }
+        }
+
+        stage('בדיקה') {
+            steps {
+                echo "אני רץ על סוכן: ${env.NODE_NAME}"
+                sh 'echo "בדיקה בסיסית בוצעה בהצלחה!"'
+            }
+        }
+
+        stage('סיום') {
+            steps {
+                echo 'הפייפליין הסתיים בהצלחה!'
+            }
+        }
+    }
+}
