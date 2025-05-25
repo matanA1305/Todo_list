@@ -1,24 +1,34 @@
-pipeline {
+pipline {
     agent any
 
     stages {
-        stage('שלום') {
+        stage('Build docker image') {
+            when { not {branch 'master' } }
             steps {
-                echo 'היי! זהו פייפליין בדיקה פשוט.'
+                sh '''
+                    docker build -t myapp ./app
+                    docker tag myapp yp3yp3/to_do_list 
+                    docker tag mt app yp3yp3/to_do_list:latest
+                    '''
             }
         }
-
-        stage('בדיקה') {
+         stage('run app with docker compose') {
             steps {
-                echo "אני רץ על סוכן: ${env.NODE_NAME}"
-                sh 'echo "בדיקה בסיסית בוצעה בהצלחה!"'
+                sh '''
+                    docker-compose down || true
+                    docker-compose up -d
+                    docker-compose ps
+                    '''
             }
-        }
-
-        stage('סיום') {
-            steps {
-                echo 'הפייפליין הסתיים בהצלחה!'
+         }
+         stage('run tests') {
+            when {
+                sh '''
+                python3 -m venv .venv
+                . . venv/bin/activate
+                pip install -r test/requirements.txt
+                pytest ./test
+                '''
             }
-        }
-    }
-}
+            }
+         }
