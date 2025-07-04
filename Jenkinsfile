@@ -1,34 +1,27 @@
-pipline {
+pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'to_do_list'
+    }
     stages {
-        stage('Build docker image') {
-            when { not {branch 'master' } }
+        stage('Build Docker Image') {
             steps {
-                sh '''
-                    docker build -t myapp ./app
-                    docker tag myapp yp3yp3/to_do_list 
-                    docker tag mt app yp3yp3/to_do_list:latest
+}
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh '''
+                    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                    docker tag myapp $DOCKER_USERNAME/myapp:latest
+                    docker push $DOCKER_USERNAME/myapp:latest
+                    echo $DOCKER_PASSWORD | docker login --username foo --password-stdin
+                    docker tag myapp $DOCKER_USERNAME/$IMAGE_NAME:latest
+                    docker push $DOCKER_USERNAME/$IMAGE_NAME:latest
                     '''
+                    }
+                }
             }
         }
-         stage('run app with docker compose') {
-            steps {
-                sh '''
-                    docker-compose down || true
-                    docker-compose up -d
-                    docker-compose ps
-                    '''
-            }
-         }
-         stage('run tests') {
-            when {
-                sh '''
-                python3 -m venv .venv
-                . . venv/bin/activate
-                pip install -r test/requirements.txt
-                pytest ./test
-                '''
-            }
-            }
-         }
+    }
+
+
