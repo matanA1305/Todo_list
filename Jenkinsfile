@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'to_do_list'
+        IMAGE_NAME = 'yp3yp3/to_do_list'
     }
     stages {
         stage('Build Docker Image') {
